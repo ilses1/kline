@@ -1,0 +1,317 @@
+/* K线图组件样式 */
+
+.kline-chart-wrapper {
+  @apply w-full h-full;
+}
+
+.kline-chart-card {
+  @apply kline-container;
+  transition: all 0.3s ease;
+}
+
+.kline-chart-card:hover {
+  @apply shadow-lg;
+}
+
+/* K线图头部 */
+.kline-chart-header {
+  @apply flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-dark-border;
+}
+
+.kline-chart-title {
+  @apply text-xl font-bold text-gray-900 dark:text-dark-text;
+}
+
+.kline-chart-actions {
+  @apply flex items-center gap-3;
+}
+
+/* K线图工具栏 */
+.kline-chart-toolbar {
+  @apply kline-toolbar;
+}
+
+.kline-chart-toolbar-group {
+  @apply flex items-center gap-2;
+}
+
+.kline-chart-toolbar-label {
+  @apply text-sm text-gray-600 dark:text-dark-textSecondary;
+}
+
+/* K线图主体 */
+.kline-chart-body {
+  @apply p-4;
+}
+
+.kline-chart-container {
+  @apply kline-chart-area;
+  min-height: 400px;
+}
+
+/* K线图加载状态 */
+.kline-chart-loading {
+  @apply flex flex-col items-center justify-center h-full;
+  min-height: 400px;
+}
+
+.kline-chart-loading-text {
+  @apply mt-4 text-gray-600 dark:text-dark-textSecondary;
+}
+
+/* K线图空状态 */
+.kline-chart-empty {
+  @apply flex flex-col items-center justify-center h-full;
+  min-height: 400px;
+}
+
+.kline-chart-empty-text {
+  @apply mt-4 text-gray-600 dark:text-dark-textSecondary;
+}
+
+/* K线图周期选择器 */
+.kline-period-selector {
+  @apply flex items-center gap-1 bg-gray-100 dark:bg-gray-800 rounded-lg p-1;
+}
+
+.kline-period-button {
+  @apply px-3 py-1.5 text-sm font-medium rounded-md transition-all duration-200;
+  color: #666;
+}
+
+.kline-period-button:hover {
+  @apply bg-white dark:bg-gray-700;
+}
+
+.kline-period-button.active {
+  @apply bg-white dark:bg-gray-700 text-primary-600 dark:text-primary-400 shadow-sm;
+}
+
+/* K线图指标选择器 */
+.kline-indicator-selector {
+  @apply min-w-[120px];
+}
+
+/* K线图刷新按钮 */
+.kline-refresh-button {
+  @apply btn-primary;
+}
+
+/* K线图成交量区域 */
+.kline-volume-container {
+  @apply mt-4;
+  height: 150px;
+}
+
+.kline-volume-title {
+  @apply text-sm font-medium text-gray-700 dark:text-dark-textSecondary mb-2;
+}
+
+/* K线图工具提示 */
+.kline-tooltip {
+  @apply bg-white dark:bg-dark-surface rounded-lg shadow-lg p-3 border border-gray-200 dark:border-dark-border;
+}
+
+.kline-tooltip-title {
+  @apply text-sm font-semibold text-gray-900 dark:text-dark-text mb-2;
+}
+
+.kline-tooltip-row {
+  @apply flex items-center justify-between text-sm;
+}
+
+.kline-tooltip-label {
+  @apply text-gray-600 dark:text-dark-textSecondary;
+}
+
+.kline-tooltip-value {
+  @apply font-medium text-gray-900 dark:text-dark-text;
+}
+
+.kline-tooltip-value-up {
+  @apply text-kline-up;
+}
+
+.kline-tooltip-value-down {
+  @apply text-kline-down;
+}
+
+/* K线图十字光标 */
+.kline-crosshair {
+  @apply pointer-events-none;
+}
+
+.kline-crosshair-line {
+  @apply stroke-gray-400 dark:stroke-gray-600;
+  stroke-width: 1;
+  stroke-dasharray: 4 4;
+}
+
+/* K线图滑块 */
+.kline-slider {
+  @apply mt-2;
+}
+
+.kline-slider-track {
+  @apply bg-primary-500;
+}
+
+.kline-slider-thumb {
+  @apply bg-white border-2 border-primary-500 rounded-full;
+  width: 14px;
+  height: 14px;
+  cursor: grab;
+}
+
+.kline-slider-thumb:hover {
+  @apply bg-primary-100;
+}
+
+/* K线图响应式 */
+@media (max-width: 768px) {
+  .kline-chart-header {
+    @apply flex-col items-start gap-3;
+  }
+
+  .kline-chart-actions {
+    @apply w-full justify-between;
+  }
+
+  .kline-chart-toolbar {
+    @apply flex-col items-start gap-3;
+  }
+
+  .kline-chart-container {
+    min-height: 300px;
+  }
+
+  .kline-volume-container {
+    height: 120px;
+  }
+
+  .kline-period-button {
+    @apply px-2 py-1 text-xs;
+  }
+}
+
+@media (max-width: 480px) {
+  .kline-chart-title {
+    @apply text-lg;
+  }
+
+  .kline-chart-container {
+    min-height: 250px;
+  }
+
+  .kline-volume-container {
+    height: 100px;
+  }
+}
+
+/* 暗色主题下的K线图样式 */
+.dark .kline-chart-card {
+  @apply bg-dark-surface border-dark-border;
+}
+
+.dark .kline-chart-header {
+  @apply border-dark-border;
+}
+
+.dark .kline-chart-title {
+  @apply text-dark-text;
+}
+
+.dark .kline-chart-toolbar-label {
+  @apply text-dark-textSecondary;
+}
+
+.dark .kline-chart-loading-text {
+  @apply text-dark-textSecondary;
+}
+
+.dark .kline-chart-empty-text {
+  @apply text-dark-textSecondary;
+}
+
+.dark .kline-period-selector {
+  @apply bg-gray-800;
+}
+
+.dark .kline-period-button {
+  color: #a0a0a0;
+}
+
+.dark .kline-period-button:hover {
+  @apply bg-gray-700;
+}
+
+.dark .kline-period-button.active {
+  @apply bg-gray-700 text-primary-400;
+}
+
+.dark .kline-tooltip {
+  @apply bg-dark-surface border-dark-border;
+}
+
+.dark .kline-tooltip-title {
+  @apply text-dark-text;
+}
+
+.dark .kline-tooltip-label {
+  @apply text-dark-textSecondary;
+}
+
+.dark .kline-tooltip-value {
+  @apply text-dark-text;
+}
+
+.dark .kline-crosshair-line {
+  @apply stroke-gray-600;
+}
+
+/* K线图动画 */
+.kline-chart-fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* K线图脉冲动画 */
+.kline-chart-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* K线图骨架屏 */
+.kline-chart-skeleton {
+  @apply bg-gray-100 dark:bg-gray-800 rounded-lg animate-pulse;
+}
+
+.kline-chart-skeleton-header {
+  @apply h-12 bg-gray-200 dark:bg-gray-700 rounded-t-lg;
+}
+
+.kline-chart-skeleton-body {
+  @apply h-96 bg-gray-100 dark:bg-gray-800;
+}
+
+.kline-chart-skeleton-footer {
+  @apply h-24 bg-gray-200 dark:bg-gray-700 rounded-b-lg;
+}
