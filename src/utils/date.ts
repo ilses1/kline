@@ -1,10 +1,12 @@
 import dayjs from 'dayjs';
 import weekday from 'dayjs/plugin/weekday';
 import isBetween from 'dayjs/plugin/isBetween';
+import relativeTime from 'dayjs/plugin/relativeTime';
 
 // 扩展 dayjs 插件
 dayjs.extend(weekday);
 dayjs.extend(isBetween);
+dayjs.extend(relativeTime);
 
 /**
  * 格式化日期
@@ -125,7 +127,7 @@ export const isWorkDay = (date: string | Date, holidays: string[] = []): boolean
  */
 export const getNextTradingDay = (date: string | Date, holidays: string[] = []): string => {
   let current = dayjs(date).add(1, 'day');
-  while (!isWorkDay(current, holidays)) {
+  while (!isWorkDay(current.toDate(), holidays)) {
     current = current.add(1, 'day');
   }
   return current.format('YYYY-MM-DD');
@@ -139,7 +141,7 @@ export const getNextTradingDay = (date: string | Date, holidays: string[] = []):
  */
 export const getPreviousTradingDay = (date: string | Date, holidays: string[] = []): string => {
   let current = dayjs(date).subtract(1, 'day');
-  while (!isWorkDay(current, holidays)) {
+  while (!isWorkDay(current.toDate(), holidays)) {
     current = current.subtract(1, 'day');
   }
   return current.format('YYYY-MM-DD');
@@ -163,7 +165,7 @@ export const getTradingDaysInRange = (
   
   let current = start;
   while (current.isBefore(end) || current.isSame(end, 'day')) {
-    if (isWorkDay(current, holidays)) {
+    if (isWorkDay(current.toDate(), holidays)) {
       tradingDays.push(current.format('YYYY-MM-DD'));
     }
     current = current.add(1, 'day');
@@ -245,7 +247,7 @@ export const generateRecentTradingDays = (
   let current = dayjs(endDate);
   
   while (tradingDays.length < days) {
-    if (isWorkDay(current, holidays)) {
+    if (isWorkDay(current.toDate(), holidays)) {
       tradingDays.unshift(current.format('YYYY-MM-DD'));
     }
     current = current.subtract(1, 'day');
@@ -297,8 +299,8 @@ export const getQuarterRange = (
   format = 'YYYY-MM-DD'
 ): [string, string] => {
   const d = dayjs(date);
-  const start = d.startOf('quarter');
-  const end = d.endOf('quarter');
+  const start = d.startOf('quarter' as any);
+  const end = d.endOf('quarter' as any);
   return [start.format(format), end.format(format)];
 };
 

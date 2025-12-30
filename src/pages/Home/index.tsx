@@ -8,13 +8,21 @@ import { getKLineData } from '../../api/marketApi';
 import type { KLineData, PeriodType, IndicatorType } from '../../types/market';
 import './index.css';
 
+const PRESET_MARKETS = [
+  { label: '沪深300', value: '000300.SH' },
+  { label: '上证指数', value: '000001.SH' },
+  { label: '深证成指', value: '399001.SZ' },
+  { label: '创业板指', value: '399006.SZ' },
+  { label: '中证500', value: '000905.SH' },
+  { label: '中证1000', value: '000852.SH' },
+];
+
 const { Header, Content, Sider, Footer } = Layout;
 
 const Home: React.FC = () => {
   const [selectedMarket, setSelectedMarket] = useState<string>('000300.SH');
   const [marketName, setMarketName] = useState<string>('沪深300');
   const [period, setPeriod] = useState<PeriodType>('day');
-  const [indicator, setIndicator] = useState<IndicatorType>('MA');
   const [klineData, setKlineData] = useState<KLineData[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
@@ -28,9 +36,12 @@ const Home: React.FC = () => {
   };
 
   // 处理市场选择
-  const handleMarketChange = (value: string, option: any) => {
+  const handleMarketChange = (value: string) => {
+    const selectedOption = PRESET_MARKETS.find(
+      (item) => item.value === value
+    );
     setSelectedMarket(value);
-    setMarketName(option?.label || '');
+    setMarketName(selectedOption?.label || '');
     fetchKlineData(value, period);
   };
 
@@ -38,11 +49,6 @@ const Home: React.FC = () => {
   const handlePeriodChange = (newPeriod: PeriodType) => {
     setPeriod(newPeriod);
     fetchKlineData(selectedMarket, newPeriod);
-  };
-
-  // 处理指标切换
-  const handleIndicatorChange = (newIndicator: IndicatorType) => {
-    setIndicator(newIndicator);
   };
 
   // 处理全屏切换
@@ -164,7 +170,6 @@ const Home: React.FC = () => {
               loading={loading}
               height={600}
               onPeriodChange={handlePeriodChange}
-              onIndicatorChange={handleIndicatorChange}
             />
           </div>
         </Content>
