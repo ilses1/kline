@@ -10,16 +10,27 @@
 }
 
 .kline-chart-card:hover {
-  @apply shadow-lg;
+  @apply shadow-xl dark:shadow-2xl;
+  transform: translateY(-2px);
 }
 
 /* K线图头部 */
 .kline-chart-header {
-  @apply flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-dark-border;
+  @apply flex items-center justify-between px-6 py-5 border-b border-gray-200/50 dark:border-dark-border/50;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.03) 0%, rgba(118, 75, 162, 0.03) 100%);
+}
+
+.dark .kline-chart-header {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%);
 }
 
 .kline-chart-title {
-  @apply text-xl font-bold text-gray-900 dark:text-dark-text;
+  @apply text-2xl font-bold;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: 0.5px;
 }
 
 .kline-chart-actions {
@@ -36,12 +47,12 @@
 }
 
 .kline-chart-toolbar-label {
-  @apply text-sm text-gray-600 dark:text-dark-textSecondary;
+  @apply text-sm font-medium text-gray-600 dark:text-dark-textSecondary;
 }
 
 /* K线图主体 */
 .kline-chart-body {
-  @apply p-4;
+  @apply p-6;
 }
 
 .kline-chart-container {
@@ -53,43 +64,95 @@
 .kline-chart-loading {
   @apply flex flex-col items-center justify-center h-full;
   min-height: 400px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(4px);
+}
+
+.dark .kline-chart-loading {
+  background: rgba(26, 26, 46, 0.95);
 }
 
 .kline-chart-loading-text {
-  @apply mt-4 text-gray-600 dark:text-dark-textSecondary;
+  @apply mt-4 text-gray-600 dark:text-dark-textSecondary font-medium;
 }
 
 /* K线图空状态 */
 .kline-chart-empty {
   @apply flex flex-col items-center justify-center h-full;
   min-height: 400px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(4px);
+}
+
+.dark .kline-chart-empty {
+  background: rgba(26, 26, 46, 0.95);
 }
 
 .kline-chart-empty-text {
-  @apply mt-4 text-gray-600 dark:text-dark-textSecondary;
+  @apply mt-4 text-gray-600 dark:text-dark-textSecondary font-medium;
 }
 
 /* K线图周期选择器 */
 .kline-period-selector {
-  @apply flex items-center gap-1 bg-gray-100 dark:bg-gray-800 rounded-lg p-1;
+  @apply flex items-center gap-1 bg-gray-100/80 dark:bg-gray-800/80 rounded-xl p-1.5;
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.dark .kline-period-selector {
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .kline-period-button {
-  @apply px-3 py-1.5 text-sm font-medium rounded-md transition-all duration-200;
+  @apply px-4 py-2 text-sm font-semibold rounded-lg transition-all duration-200;
   color: #666;
+  position: relative;
+  overflow: hidden;
+}
+
+.dark .kline-period-button {
+  color: #a0a0a0;
+}
+
+.kline-period-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .kline-period-button:hover {
   @apply bg-white dark:bg-gray-700;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dark .kline-period-button:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .kline-period-button.active {
-  @apply bg-white dark:bg-gray-700 text-primary-600 dark:text-primary-400 shadow-sm;
+  @apply text-white;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.kline-period-button.active::before {
+  opacity: 1;
+}
+
+.kline-period-button span {
+  position: relative;
+  z-index: 1;
 }
 
 /* K线图指标选择器 */
 .kline-indicator-selector {
-  @apply min-w-[120px];
+  @apply min-w-[140px];
 }
 
 /* K线图刷新按钮 */
@@ -99,33 +162,60 @@
 
 /* K线图成交量区域 */
 .kline-volume-container {
-  @apply mt-4;
+  @apply mt-6;
   height: 150px;
+  background: rgba(102, 126, 234, 0.02);
+  border-radius: 12px;
+  padding: 16px;
+  border: 1px solid rgba(102, 126, 234, 0.1);
+}
+
+.dark .kline-volume-container {
+  background: rgba(102, 126, 234, 0.05);
+  border: 1px solid rgba(102, 126, 234, 0.2);
 }
 
 .kline-volume-title {
-  @apply text-sm font-medium text-gray-700 dark:text-dark-textSecondary mb-2;
+  @apply text-sm font-semibold text-gray-700 dark:text-dark-textSecondary mb-3;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 /* K线图工具提示 */
 .kline-tooltip {
-  @apply bg-white dark:bg-dark-surface rounded-lg shadow-lg p-3 border border-gray-200 dark:border-dark-border;
+  @apply bg-white/95 dark:bg-dark-surface/95 rounded-xl shadow-lg p-4 border border-gray-200/50 dark:border-dark-border/50;
+  backdrop-filter: blur(8px);
+  min-width: 200px;
+}
+
+.dark .kline-tooltip {
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .kline-tooltip-title {
-  @apply text-sm font-semibold text-gray-900 dark:text-dark-text mb-2;
+  @apply text-sm font-bold text-gray-900 dark:text-dark-text mb-3;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .kline-tooltip-row {
-  @apply flex items-center justify-between text-sm;
+  @apply flex items-center justify-between text-sm mb-2;
+}
+
+.kline-tooltip-row:last-child {
+  @apply mb-0;
 }
 
 .kline-tooltip-label {
-  @apply text-gray-600 dark:text-dark-textSecondary;
+  @apply text-gray-600 dark:text-dark-textSecondary font-medium;
 }
 
 .kline-tooltip-value {
-  @apply font-medium text-gray-900 dark:text-dark-text;
+  @apply font-bold text-gray-900 dark:text-dark-text;
 }
 
 .kline-tooltip-value-up {
@@ -149,28 +239,67 @@
 
 /* K线图滑块 */
 .kline-slider {
-  @apply mt-2;
+  @apply mt-3;
 }
 
 .kline-slider-track {
-  @apply bg-primary-500;
+  @apply bg-gradient-to-r from-primary-500 to-primary-600;
 }
 
 .kline-slider-thumb {
-  @apply bg-white border-2 border-primary-500 rounded-full;
-  width: 14px;
-  height: 14px;
+  @apply bg-white border-2 border-primary-500 rounded-full shadow-lg;
+  width: 16px;
+  height: 16px;
   cursor: grab;
+  transition: all 0.3s ease;
 }
 
 .kline-slider-thumb:hover {
   @apply bg-primary-100;
+  transform: scale(1.1);
+}
+
+.kline-slider-thumb:active {
+  transform: scale(1.2);
 }
 
 /* K线图响应式 */
+/* 平板设备适配 */
+@media (max-width: 1024px) {
+  .kline-chart-header {
+    @apply px-5 py-4;
+  }
+
+  .kline-chart-title {
+    @apply text-xl;
+  }
+
+  .kline-chart-body {
+    padding: 20px;
+  }
+
+  .kline-chart-container {
+    min-height: 350px;
+  }
+
+  .kline-volume-container {
+    height: 130px;
+    padding: 14px;
+  }
+
+  .kline-period-button {
+    @apply px-3 py-2 text-sm;
+  }
+
+  .kline-tooltip {
+    min-width: 180px;
+  }
+}
+
+/* 移动端设备适配 */
 @media (max-width: 768px) {
   .kline-chart-header {
-    @apply flex-col items-start gap-3;
+    @apply flex-col items-start gap-4 px-4 py-4;
   }
 
   .kline-chart-actions {
@@ -181,22 +310,132 @@
     @apply flex-col items-start gap-3;
   }
 
+  .kline-chart-toolbar-group {
+    @apply w-full justify-between;
+  }
+
+  .kline-chart-body {
+    padding: 16px;
+  }
+
   .kline-chart-container {
     min-height: 300px;
   }
 
   .kline-volume-container {
     height: 120px;
+    padding: 12px;
   }
 
   .kline-period-button {
-    @apply px-2 py-1 text-xs;
+    @apply px-3 py-1.5 text-xs;
+  }
+
+  .kline-chart-title {
+    @apply text-lg;
+  }
+
+  .kline-tooltip {
+    min-width: 160px;
+    padding: 12px;
+  }
+
+  /* 触摸反馈 */
+  .kline-period-button:active {
+    transform: scale(0.95);
+  }
+
+  .kline-refresh-button:active {
+    transform: scale(0.95);
+  }
+
+  /* 滚动优化 */
+  .kline-chart-wrapper {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* 加载状态适配 */
+  .kline-chart-loading,
+  .kline-chart-empty {
+    min-height: 300px;
+  }
+
+  /* 指标选择器优化 */
+  .kline-indicator-selector {
+    min-width: 120px;
+  }
+}
+
+@media (max-width: 640px) {
+  .kline-chart-header {
+    @apply px-3 py-3;
+  }
+
+  .kline-chart-title {
+    @apply text-base;
+  }
+
+  .kline-chart-body {
+    padding: 12px;
+  }
+
+  .kline-chart-container {
+    min-height: 280px;
+  }
+
+  .kline-volume-container {
+    height: 110px;
+    padding: 10px;
+  }
+
+  .kline-period-button {
+    @apply px-2 py-1.5 text-xs;
+  }
+
+  .kline-period-selector {
+    @apply gap-0.5 p-1;
+  }
+
+  .kline-tooltip {
+    min-width: 150px;
+    padding: 10px;
+  }
+
+  .kline-tooltip-title {
+    @apply text-xs;
+  }
+
+  .kline-tooltip-row {
+    @apply text-xs;
+  }
+
+  /* 工具栏优化 */
+  .kline-chart-toolbar-group {
+    @apply gap-1;
+  }
+
+  /* 指标选择器优化 */
+  .kline-indicator-selector {
+    min-width: 100px;
+  }
+
+  /* 刷新按钮优化 */
+  .kline-refresh-button {
+    @apply px-3 py-1.5 text-xs;
   }
 }
 
 @media (max-width: 480px) {
+  .kline-chart-header {
+    padding: 12px;
+  }
+
   .kline-chart-title {
-    @apply text-lg;
+    @apply text-sm;
+  }
+
+  .kline-chart-body {
+    padding: 10px;
   }
 
   .kline-chart-container {
@@ -205,76 +444,174 @@
 
   .kline-volume-container {
     height: 100px;
+    padding: 8px;
+  }
+
+  .kline-period-button {
+    @apply px-2 py-1 text-xs;
+  }
+
+  .kline-period-selector {
+    @apply gap-0.5 p-0.5;
+  }
+
+  .kline-tooltip {
+    min-width: 140px;
+    padding: 8px;
+  }
+
+  .kline-tooltip-title {
+    @apply text-xs;
+  }
+
+  .kline-tooltip-row {
+    @apply text-xs;
+  }
+
+  .kline-volume-title {
+    @apply text-xs;
+  }
+
+  /* 触摸优化 */
+  .kline-chart-card,
+  .kline-period-button,
+  .kline-refresh-button {
+    -webkit-tap-highlight-color: transparent;
   }
 }
 
-/* 暗色主题下的K线图样式 */
-.dark .kline-chart-card {
-  @apply bg-dark-surface border-dark-border;
+@media (max-width: 375px) {
+  .kline-chart-header {
+    padding: 10px;
+  }
+
+  .kline-chart-title {
+    @apply text-xs;
+  }
+
+  .kline-chart-body {
+    padding: 8px;
+  }
+
+  .kline-chart-container {
+    min-height: 220px;
+  }
+
+  .kline-volume-container {
+    height: 90px;
+    padding: 6px;
+  }
+
+  .kline-period-button {
+    @apply px-1.5 py-0.5 text-xs;
+  }
+
+  .kline-period-selector {
+    @apply gap-0.5 p-0.5;
+  }
+
+  .kline-tooltip {
+    min-width: 130px;
+    padding: 6px;
+  }
+
+  .kline-tooltip-title {
+    @apply text-xs;
+  }
+
+  .kline-tooltip-row {
+    @apply text-xs;
+  }
+
+  .kline-volume-title {
+    @apply text-xs;
+  }
+
+  /* 指标选择器优化 */
+  .kline-indicator-selector {
+    min-width: 90px;
+  }
+
+  /* 刷新按钮优化 */
+  .kline-refresh-button {
+    @apply px-2 py-1 text-xs;
+  }
 }
 
-.dark .kline-chart-header {
-  @apply border-dark-border;
+/* 横屏模式适配 */
+@media (max-height: 500px) and (orientation: landscape) {
+  .kline-chart-header {
+    @apply px-4 py-3;
+  }
+
+  .kline-chart-title {
+    @apply text-base;
+  }
+
+  .kline-chart-body {
+    padding: 12px;
+  }
+
+  .kline-chart-container {
+    min-height: 200px;
+  }
+
+  .kline-volume-container {
+    height: 80px;
+    padding: 8px;
+  }
+
+  .kline-period-button {
+    @apply px-2 py-1 text-xs;
+  }
+
+  .kline-tooltip {
+    min-width: 150px;
+    padding: 10px;
+  }
 }
 
-.dark .kline-chart-title {
-  @apply text-dark-text;
+/* 移动端滚动条优化 */
+@media (max-width: 768px) {
+  .kline-chart-wrapper::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+
+  .kline-chart-wrapper::-webkit-scrollbar-track {
+    background: rgba(102, 126, 234, 0.1);
+  }
+
+  .kline-chart-wrapper::-webkit-scrollbar-thumb {
+    background: rgba(102, 126, 234, 0.3);
+    border-radius: 2px;
+  }
+
+  .kline-chart-wrapper::-webkit-scrollbar-thumb:hover {
+    background: rgba(102, 126, 234, 0.5);
+  }
 }
 
-.dark .kline-chart-toolbar-label {
-  @apply text-dark-textSecondary;
+/* 移动端加载状态优化 */
+@media (max-width: 768px) {
+  .kline-chart-loading,
+  .kline-chart-empty {
+    background: rgba(255, 255, 255, 0.95);
+  }
+
+  .dark .kline-chart-loading,
+  .dark .kline-chart-empty {
+    background: rgba(26, 26, 46, 0.95);
+  }
+
+  .kline-chart-loading-text,
+  .kline-chart-empty-text {
+    @apply text-sm;
+  }
 }
 
-.dark .kline-chart-loading-text {
-  @apply text-dark-textSecondary;
-}
-
-.dark .kline-chart-empty-text {
-  @apply text-dark-textSecondary;
-}
-
-.dark .kline-period-selector {
-  @apply bg-gray-800;
-}
-
-.dark .kline-period-button {
-  color: #a0a0a0;
-}
-
-.dark .kline-period-button:hover {
-  @apply bg-gray-700;
-}
-
-.dark .kline-period-button.active {
-  @apply bg-gray-700 text-primary-400;
-}
-
-.dark .kline-tooltip {
-  @apply bg-dark-surface border-dark-border;
-}
-
-.dark .kline-tooltip-title {
-  @apply text-dark-text;
-}
-
-.dark .kline-tooltip-label {
-  @apply text-dark-textSecondary;
-}
-
-.dark .kline-tooltip-value {
-  @apply text-dark-text;
-}
-
-.dark .kline-crosshair-line {
-  @apply stroke-gray-600;
-}
-
-/* K线图动画 */
-.kline-chart-fade-in {
-  animation: fadeIn 0.3s ease-in-out;
-}
-
-@keyframes fadeIn {
+/* 动画效果 */
+@keyframes chartFadeIn {
   from {
     opacity: 0;
     transform: translateY(10px);
@@ -285,11 +622,11 @@
   }
 }
 
-/* K线图脉冲动画 */
-.kline-chart-pulse {
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+.kline-chart-container {
+  animation: chartFadeIn 0.5s ease-out;
 }
 
+/* 加载动画 */
 @keyframes pulse {
   0%, 100% {
     opacity: 1;
@@ -299,19 +636,33 @@
   }
 }
 
-/* K线图骨架屏 */
-.kline-chart-skeleton {
-  @apply bg-gray-100 dark:bg-gray-800 rounded-lg animate-pulse;
+.kline-chart-loading {
+  animation: pulse 2s ease-in-out infinite;
 }
 
-.kline-chart-skeleton-header {
-  @apply h-12 bg-gray-200 dark:bg-gray-700 rounded-t-lg;
+/* 交互效果 */
+.kline-chart-card {
+  position: relative;
+  overflow: hidden;
 }
 
-.kline-chart-skeleton-body {
-  @apply h-96 bg-gray-100 dark:bg-gray-800;
+.kline-chart-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.5s ease;
 }
 
-.kline-chart-skeleton-footer {
-  @apply h-24 bg-gray-200 dark:bg-gray-700 rounded-b-lg;
+.kline-chart-card:hover::before {
+  left: 100%;
 }
+
+.dark .kline-chart-card::before {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+}
+
+

@@ -1,0 +1,506 @@
+.market-detail-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+  padding: 32px;
+}
+
+.dark .market-detail-container {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+}
+
+.market-detail-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.market-detail-card:hover {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+.dark .market-detail-card {
+  background: rgba(26, 26, 46, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.dark .market-detail-card:hover {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+}
+
+.market-detail-card .ant-card-head {
+  background: rgba(102, 126, 234, 0.05);
+  border-bottom: 2px solid rgba(102, 126, 234, 0.1);
+  padding: 20px 24px;
+}
+
+.dark .market-detail-card .ant-card-head {
+  background: rgba(102, 126, 234, 0.1);
+  border-bottom: 2px solid rgba(102, 126, 234, 0.2);
+}
+
+.market-detail-card .ant-card-head-title {
+  font-size: 22px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.market-detail-card .ant-card-body {
+  padding: 24px;
+}
+
+/* 返回按钮样式 */
+.back-button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  color: white;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 8px 20px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.back-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  color: white;
+}
+
+/* 统计卡片样式 */
+.stat-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  height: 100%;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.dark .stat-card {
+  background: rgba(26, 26, 46, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.dark .stat-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.stat-card .ant-card-head {
+  border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+  padding: 12px 16px;
+  background: transparent;
+}
+
+.stat-card .ant-card-head-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #667eea;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.dark .stat-card .ant-card-head-title {
+  color: #a5b4fc;
+}
+
+.stat-card .ant-card-body {
+  padding: 16px;
+}
+
+.stat-value {
+  font-size: 28px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.2;
+}
+
+/* 价格颜色 */
+.price-up {
+  color: #ef4444;
+}
+
+.price-down {
+  color: #22c55e;
+}
+
+/* 加载状态优化 */
+.ant-spin-nested-loading > div > .ant-spin {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(4px);
+}
+
+.dark .ant-spin-nested-loading > div > .ant-spin {
+  background: rgba(26, 26, 46, 0.8);
+}
+
+/* 动画效果 */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.market-detail-card,
+.stat-card {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+.stat-card:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.stat-card:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+.stat-card:nth-child(4) {
+  animation-delay: 0.3s;
+}
+
+/* 响应式设计 */
+/* 平板设备适配 */
+@media (max-width: 1024px) {
+  .market-detail-container {
+    padding: 24px;
+  }
+
+  .market-detail-card .ant-card-head-title {
+    font-size: 20px;
+  }
+
+  .stat-card {
+    padding: 20px;
+  }
+
+  .stat-value {
+    font-size: 26px;
+  }
+}
+
+/* 移动端设备适配 */
+@media (max-width: 768px) {
+  .market-detail-container {
+    padding: 20px;
+  }
+
+  .market-detail-card .ant-card-head {
+    padding: 16px 20px;
+  }
+
+  .market-detail-card .ant-card-head-title {
+    font-size: 18px;
+  }
+
+  .market-detail-card .ant-card-body {
+    padding: 20px;
+  }
+
+  .stat-card {
+    padding: 20px;
+  }
+
+  .stat-value {
+    font-size: 24px;
+  }
+
+  /* 触摸反馈 */
+  .back-button:active {
+    transform: scale(0.95);
+  }
+
+  .stat-card:active {
+    transform: scale(0.98);
+  }
+
+  /* 滚动优化 */
+  .market-detail-container {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* 加载状态适配 */
+  .ant-spin-nested-loading > div > .ant-spin {
+    max-height: 60vh;
+  }
+}
+
+@media (max-width: 640px) {
+  .market-detail-container {
+    padding: 16px;
+  }
+
+  .market-detail-card {
+    border-radius: 12px;
+  }
+
+  .market-detail-card .ant-card-head {
+    padding: 14px 16px;
+  }
+
+  .market-detail-card .ant-card-head-title {
+    font-size: 16px;
+  }
+
+  .market-detail-card .ant-card-body {
+    padding: 16px;
+  }
+
+  .stat-card {
+    padding: 16px;
+    border-radius: 8px;
+  }
+
+  .stat-card .ant-card-head {
+    padding: 10px 12px;
+  }
+
+  .stat-card .ant-card-head-title {
+    font-size: 12px;
+  }
+
+  .stat-card .ant-card-body {
+    padding: 12px;
+  }
+
+  .stat-value {
+    font-size: 18px;
+  }
+
+  .back-button {
+    padding: 6px 14px;
+    font-size: 13px;
+  }
+
+  /* 统计卡片垂直排列 */
+  .ant-row {
+    flex-direction: column;
+  }
+
+  .ant-col {
+    width: 100% !important;
+    margin-bottom: 12px;
+  }
+
+  .ant-col:last-child {
+    margin-bottom: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .market-detail-container {
+    padding: 14px;
+  }
+
+  .market-detail-card {
+    border-radius: 10px;
+  }
+
+  .market-detail-card .ant-card-head {
+    padding: 12px 14px;
+  }
+
+  .market-detail-card .ant-card-head-title {
+    font-size: 15px;
+  }
+
+  .market-detail-card .ant-card-body {
+    padding: 14px;
+  }
+
+  .stat-card {
+    padding: 14px;
+    border-radius: 8px;
+  }
+
+  .stat-card .ant-card-head {
+    padding: 8px 10px;
+  }
+
+  .stat-card .ant-card-head-title {
+    font-size: 11px;
+  }
+
+  .stat-card .ant-card-body {
+    padding: 10px;
+  }
+
+  .stat-value {
+    font-size: 16px;
+  }
+
+  .back-button {
+    padding: 5px 12px;
+    font-size: 12px;
+  }
+
+  /* 触摸优化 */
+  .back-button,
+  .stat-card {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+@media (max-width: 375px) {
+  .market-detail-container {
+    padding: 12px;
+  }
+
+  .market-detail-card {
+    border-radius: 8px;
+  }
+
+  .market-detail-card .ant-card-head {
+    padding: 10px 12px;
+  }
+
+  .market-detail-card .ant-card-head-title {
+    font-size: 14px;
+  }
+
+  .market-detail-card .ant-card-body {
+    padding: 12px;
+  }
+
+  .stat-card {
+    padding: 12px;
+    border-radius: 6px;
+  }
+
+  .stat-card .ant-card-head {
+    padding: 8px;
+  }
+
+  .stat-card .ant-card-head-title {
+    font-size: 10px;
+  }
+
+  .stat-card .ant-card-body {
+    padding: 8px;
+  }
+
+  .stat-value {
+    font-size: 14px;
+  }
+
+  .back-button {
+    padding: 4px 10px;
+    font-size: 11px;
+  }
+}
+
+/* 横屏模式适配 */
+@media (max-height: 500px) and (orientation: landscape) {
+  .market-detail-container {
+    padding: 16px;
+  }
+
+  .market-detail-card .ant-card-head {
+    padding: 12px 16px;
+  }
+
+  .market-detail-card .ant-card-head-title {
+    font-size: 16px;
+  }
+
+  .market-detail-card .ant-card-body {
+    padding: 16px;
+  }
+
+  .stat-card {
+    padding: 16px;
+  }
+
+  .stat-card .ant-card-head {
+    padding: 8px 12px;
+  }
+
+  .stat-card .ant-card-body {
+    padding: 12px;
+  }
+
+  .stat-value {
+    font-size: 20px;
+  }
+
+  .back-button {
+    padding: 6px 14px;
+    font-size: 13px;
+  }
+}
+
+/* 移动端滚动条优化 */
+@media (max-width: 768px) {
+  .market-detail-container::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .market-detail-container::-webkit-scrollbar-thumb {
+    background: rgba(102, 126, 234, 0.2);
+  }
+
+  .market-detail-container::-webkit-scrollbar-thumb:hover {
+    background: rgba(102, 126, 234, 0.4);
+  }
+}
+
+/* 移动端加载状态优化 */
+@media (max-width: 768px) {
+  .ant-spin-nested-loading > div > .ant-spin {
+    background: rgba(255, 255, 255, 0.9);
+  }
+
+  .dark .ant-spin-nested-loading > div > .ant-spin {
+    background: rgba(26, 26, 46, 0.9);
+  }
+
+  .ant-spin-dot {
+    font-size: 20px;
+  }
+}
+
+.market-detail-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.market-detail-container::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+}
+
+.dark .market-detail-container::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.market-detail-container::-webkit-scrollbar-thumb {
+  background: rgba(102, 126, 234, 0.3);
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.market-detail-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(102, 126, 234, 0.5);
+}
+

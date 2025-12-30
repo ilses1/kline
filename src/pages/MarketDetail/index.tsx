@@ -5,6 +5,7 @@ import { ArrowLeftOutlined } from '@ant-design/icons';
 import KLineChart from '@/components/KLineChart';
 import { getKLineData } from '@/api/marketApi';
 import type { KLineData, PeriodType, IndicatorType } from '@/types/market';
+import './index.css';
 
 const MarketDetail: React.FC = () => {
   const { symbol } = useParams<{ symbol: string }>();
@@ -48,12 +49,17 @@ const MarketDetail: React.FC = () => {
   };
 
   return (
-    <div style={{ padding: '24px' }}>
+    <div className="market-detail-container">
       <Card
         title={`${symbol} - K线图`}
+        className="market-detail-card"
         extra={
           <Space>
-            <Button icon={<ArrowLeftOutlined />} onClick={handleBack}>
+            <Button 
+              icon={<ArrowLeftOutlined />} 
+              onClick={handleBack}
+              className="back-button"
+            >
               返回
             </Button>
           </Space>
@@ -74,29 +80,29 @@ const MarketDetail: React.FC = () => {
 
       <Row gutter={[16, 16]} style={{ marginTop: '24px' }}>
         <Col span={6}>
-          <Card title="当前价格" bordered={false}>
-            <p style={{ fontSize: '24px', fontWeight: 'bold' }}>
+          <Card title="当前价格" bordered={false} className="stat-card">
+            <p className="stat-value">
               {klineData.length > 0 ? klineData[klineData.length - 1].close.toFixed(2) : '--'}
             </p>
           </Card>
         </Col>
         <Col span={6}>
-          <Card title="最高价" bordered={false}>
-            <p style={{ fontSize: '24px', fontWeight: 'bold' }}>
+          <Card title="最高价" bordered={false} className="stat-card">
+            <p className="stat-value">
               {klineData.length > 0 ? Math.max(...klineData.map(d => d.high)).toFixed(2) : '--'}
             </p>
           </Card>
         </Col>
         <Col span={6}>
-          <Card title="最低价" bordered={false}>
-            <p style={{ fontSize: '24px', fontWeight: 'bold' }}>
+          <Card title="最低价" bordered={false} className="stat-card">
+            <p className="stat-value">
               {klineData.length > 0 ? Math.min(...klineData.map(d => d.low)).toFixed(2) : '--'}
             </p>
           </Card>
         </Col>
         <Col span={6}>
-          <Card title="成交量" bordered={false}>
-            <p style={{ fontSize: '24px', fontWeight: 'bold' }}>
+          <Card title="成交量" bordered={false} className="stat-card">
+            <p className="stat-value">
               {klineData.length > 0 ? klineData[klineData.length - 1].volume.toLocaleString() : '--'}
             </p>
           </Card>

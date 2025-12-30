@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { Select } from 'antd';
 import type { SelectProps } from 'antd';
+import './MarketSelector.css';
 
 // 市场选项类型
 export interface MarketOption {
