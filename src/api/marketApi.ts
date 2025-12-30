@@ -150,11 +150,47 @@ const generateMockIndicatorData = (
 };
 
 /**
+ * 计算默认日期范围
+ * @param period 时间周期
+ * @returns 默认开始日期
+ */
+const getDefaultStartDate = (period: PeriodType): string => {
+  const date = new Date();
+  
+  switch (period) {
+    case 'day':
+      // 日K默认近一个月
+      date.setMonth(date.getMonth() - 1);
+      break;
+    case 'week':
+      // 周K默认半年
+      date.setMonth(date.getMonth() - 6);
+      break;
+    case 'month':
+      // 月K默认两年
+      date.setFullYear(date.getFullYear() - 2);
+      break;
+    case 'minute':
+      // 分钟K默认当天
+      date.setHours(0, 0, 0, 0);
+      break;
+    case 'hour':
+      // 小时K默认近一周
+      date.setDate(date.getDate() - 7);
+      break;
+    default:
+      date.setMonth(date.getMonth() - 1);
+  }
+  
+  return date.toISOString().split('T')[0];
+};
+
+/**
  * 获取K线数据
  * @param symbol 股票代码（格式：000300.SH 或 399001.SZ）
  * @param period 时间周期
- * @param startDate 开始日期（可选，格式：YYYY-MM-DD）
- * @param endDate 结束日期（可选，格式：YYYY-MM-DD）
+ * @param startDate 开始日期（可选，格式：YYYY-MM-DD，不传则根据周期类型使用默认值）
+ * @param endDate 结束日期（可选，格式：YYYY-MM-DD，不传则使用今天）
  * @param count 数据条数（默认100）
  */
 export const getKLineData = async (
@@ -168,6 +204,11 @@ export const getKLineData = async (
     const secid = symbolToSecid(symbol);
     const periodCode = periodToApiCode(period);
 
+    // 如果没有指定开始日期，使用默认值
+    const defaultStartDate = startDate || getDefaultStartDate(period);
+    // 如果没有指定结束日期，使用今天
+    const defaultEndDate = endDate || new Date().toISOString().split('T')[0];
+
     const response = await request.get('/stock/kline/get', {
       params: {
         secid,
@@ -175,8 +216,8 @@ export const getKLineData = async (
         fields2: 'f51,f52,f53,f54,f55,f56,f57,f58,f59,f60,f61',
         klt: periodCode,
         fqt: 1, // 前复权
-        beg: startDate || '0',
-        end: endDate || '20500101',
+        beg: defaultStartDate,
+        end: defaultEndDate,
         lmt: count,
       },
     });
