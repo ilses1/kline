@@ -156,19 +156,9 @@ const generateMockIndicatorData = (
 const getDefaultStartDate = (period: PeriodType): string => {
   const date = new Date();
   
+  // 对于所有周期，都返回一个非常早的日期，确保获取完整的历史数据
+  // 对于分钟和小时K线，仍然限制为当天/近一周，避免数据量过大
   switch (period) {
-    case 'day':
-      // 日K默认近一个月
-      date.setMonth(date.getMonth() - 1);
-      break;
-    case 'week':
-      // 周K默认半年
-      date.setMonth(date.getMonth() - 6);
-      break;
-    case 'month':
-      // 月K默认两年
-      date.setFullYear(date.getFullYear() - 2);
-      break;
     case 'minute':
       // 分钟K默认当天
       date.setHours(0, 0, 0, 0);
@@ -178,7 +168,8 @@ const getDefaultStartDate = (period: PeriodType): string => {
       date.setDate(date.getDate() - 7);
       break;
     default:
-      date.setMonth(date.getMonth() - 1);
+      // 其他周期返回20年前的日期，确保获取完整历史数据
+      date.setFullYear(date.getFullYear() - 20);
   }
   
   return date.toISOString().split('T')[0];
@@ -190,14 +181,14 @@ const getDefaultStartDate = (period: PeriodType): string => {
  * @param period 时间周期
  * @param startDate 开始日期（可选，格式：YYYY-MM-DD，不传则根据周期类型使用默认值）
  * @param endDate 结束日期（可选，格式：YYYY-MM-DD，不传则使用今天）
- * @param count 数据条数（默认100）
+ * @param count 数据条数（默认1000，增加默认值确保获取足够的历史数据）
  */
 export const getKLineData = async (
   symbol: string,
   period: PeriodType = 'day',
   startDate?: string,
   endDate?: string,
-  count: number = 100
+  count: number = 1000
 ): Promise<KLineData[]> => {
   try {
     const secid = symbolToSecid(symbol);
