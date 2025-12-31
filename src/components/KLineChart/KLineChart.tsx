@@ -106,8 +106,19 @@ const KLineChart: React.FC<KLineChartProps> = ({
       chart.createIndicator(indicator);
     }
 
+    // 添加ResizeObserver监听容器大小变化
+    const resizeObserver = new ResizeObserver(() => {
+      if (chartInstanceRef.current) {
+        chartInstanceRef.current.resize();
+      }
+    });
+
+    // 监听图表容器
+    resizeObserver.observe(chartRef.current);
+
     // 清理函数
     return () => {
+      resizeObserver.disconnect();
       dispose(chartRef.current as HTMLElement);
       chartInstanceRef.current = null;
     };
@@ -141,12 +152,13 @@ const KLineChart: React.FC<KLineChartProps> = ({
           </Button>
         </Space>
       }
+      bodyStyle={{ padding: 0, height: '100%' }}
     >
       <Spin spinning={loading}>
         {data.length === 0 ? (
           <Empty description="暂无数据" style={{ padding: '50px 0' }} />
         ) : (
-          <div ref={chartRef} style={{ width: '100%', height: `${height + 150}px` }} />
+          <div ref={chartRef} style={{ width: '100%', height: '100%', minHeight: `${height + 150}px` }} />
         )}
       </Spin>
     </Card>
