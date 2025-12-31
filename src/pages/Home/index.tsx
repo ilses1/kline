@@ -17,7 +17,7 @@ const PRESET_MARKETS = [
   { label: '中证1000', value: '000852.SH' },
 ];
 
-const { Header, Content, Sider, Footer } = Layout;
+const { Header, Content, Footer } = Layout;
 
 const Home: React.FC = () => {
   const [selectedMarket, setSelectedMarket] = useState<string>('000300.SH');
@@ -133,31 +133,32 @@ const Home: React.FC = () => {
 
   return (
     <Layout className="home-layout">
-      <Sider width={280} className="home-sider">
-        <div className="sider-content">
-          <h3 className="sider-title">市场选择</h3>
-          <MarketSelector
-            value={selectedMarket}
-            onChange={handleMarketChange}
-            placeholder="请选择市场"
-          />
-        </div>
-      </Sider>
-
       <Layout className="home-content-layout">
         <Header className="home-header">
           <div className="header-content">
-            <h2 className="market-title">{marketName}</h2>
-            <Space>
-              <ThemeToggle />
-              <Button
-                type="text"
-                icon={isFullscreen ? <FullscreenExitOutlined /> : <FullscreenOutlined />}
-                onClick={handleFullscreenToggle}
-              >
-                {isFullscreen ? '退出全屏' : '全屏'}
-              </Button>
-            </Space>
+            <div className="header-left">
+              <h2 className="market-title">{marketName}</h2>
+            </div>
+            <div className="header-right">
+              <Space>
+                <div className="market-selector-container">
+                  <MarketSelector
+                    value={selectedMarket}
+                    onChange={handleMarketChange}
+                    placeholder="请选择市场"
+                    style={{ width: 200 }}
+                  />
+                </div>
+                <ThemeToggle />
+                <Button
+                  type="text"
+                  icon={isFullscreen ? <FullscreenExitOutlined /> : <FullscreenOutlined />}
+                  onClick={handleFullscreenToggle}
+                >
+                  {isFullscreen ? '退出全屏' : '全屏'}
+                </Button>
+              </Space>
+            </div>
           </div>
         </Header>
 

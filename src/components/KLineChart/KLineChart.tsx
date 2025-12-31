@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
-import { Card, Spin, Empty, Radio, Select, Space, Button } from 'antd';
+import { Card, Spin, Empty, Radio, Select, Button } from 'antd';
 import { ReloadOutlined } from '@ant-design/icons';
 import { init, dispose, type KLineData as KLineChartLibData } from 'klinecharts';
 import type { KLineChartProps, PeriodType, IndicatorType } from './types';
@@ -91,7 +91,7 @@ const KLineChart: React.FC<KLineChartProps> = ({
       dispose(chartRef.current as HTMLElement);
     }
 
-    // 创建图表实例 - v9版本：不设置height，通过CSS控制
+    // 创建图表实例 - v9版本：使用默认配置，通过CSS控制高度
     const chart = init(chartRef.current);
 
     if (!chart) return;
@@ -124,43 +124,64 @@ const KLineChart: React.FC<KLineChartProps> = ({
     };
   }, [chartData, indicator]);
 
+  // 适配移动端：窗口大小变化时重新调整图表
+  useEffect(() => {
+    const handleResize = () => {
+      if (chartInstanceRef.current) {
+        chartInstanceRef.current.resize();
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   return (
     <Card
+      className="kline-chart-card"
       title={
-        <div className="kline-header">
-          <span className="symbol-name">{symbol}</span>
-          <Space size="middle">
-            <Radio.Group
-              options={periodOptions}
-              value={period}
-              onChange={(e) => handlePeriodChange(e.target.value)}
-              buttonStyle="solid"
-            />
-            <Select
-              value={indicator}
-              onChange={handleIndicatorChange}
-              options={indicatorOptions}
-              style={{ width: 120 }}
-            />
-          </Space>
+        <div className="kline-chart-header">
+          <h2 className="kline-chart-title">{symbol}</h2>
+          <div className="kline-chart-actions">
+            <div className="kline-chart-toolbar">
+              <div className="kline-chart-toolbar-group">
+                <span className="kline-chart-toolbar-label">周期:</span>
+                <Radio.Group
+                  options={periodOptions}
+                  value={period}
+                  onChange={(e) => handlePeriodChange(e.target.value)}
+                  buttonStyle="solid"
+                  className="kline-period-selector"
+                />
+              </div>
+              <div className="kline-chart-toolbar-group">
+                <span className="kline-chart-toolbar-label">指标:</span>
+                <Select
+                  value={indicator}
+                  onChange={handleIndicatorChange}
+                  options={indicatorOptions}
+                  className="kline-indicator-selector"
+                  style={{ width: window.innerWidth < 768 ? 100 : 140 }}
+                />
+              </div>
+            </div>
+            <Button type="text" icon={<ReloadOutlined />} onClick={() => {}} className="kline-refresh-button">
+              刷新
+            </Button>
+          </div>
         </div>
-      }
-      extra={
-        <Space>
-          <Button type="text" icon={<ReloadOutlined />} onClick={() => {}}>
-            刷新
-          </Button>
-        </Space>
       }
       bodyStyle={{ padding: 0, height: '100%' }}
     >
-      <Spin spinning={loading}>
-        {data.length === 0 ? (
-          <Empty description="暂无数据" style={{ padding: '50px 0' }} />
-        ) : (
-          <div ref={chartRef} style={{ width: '100%', height: '100%', minHeight: `${height + 150}px` }} />
-        )}
-      </Spin>
+      <div className="kline-chart-body">
+        <Spin spinning={loading} className="kline-chart-loading">
+          {data.length === 0 ? (
+            <Empty description="暂无数据" className="kline-chart-empty" />
+          ) : (
+            <div ref={chartRef} className="kline-chart-container" style={{ width: '100%', height: '100%', minHeight: `${height + 150}px` }} />
+          )}
+        </Spin>
+      </div>
     </Card>
   );
 };

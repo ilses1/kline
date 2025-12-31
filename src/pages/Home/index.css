@@ -2,6 +2,7 @@
   height: 100vh;
   overflow: hidden;
   background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+  flex-direction: column;
 }
 
 .dark .home-layout {
@@ -11,24 +12,41 @@
 .home-sider {
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
-  border-right: 1px solid rgba(0, 0, 0, 0.08);
-  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.04);
-  overflow-y: auto;
+  border-right: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  overflow-y: visible;
+  overflow-x: auto;
   transition: all 0.3s ease;
+  height: auto;
+  min-height: auto;
+  width: 100% !important;
 }
 
 .dark .home-sider {
   background: rgba(26, 26, 46, 0.95);
-  border-right: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
+  border-right: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .sider-content {
-  padding: 32px 24px;
+  padding: 20px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.sider-content .market-selector {
+  width: 100%;
+  max-width: 400px;
 }
 
 .sider-title {
-  margin-bottom: 20px;
+  margin-bottom: 0;
   font-size: 18px;
   font-weight: 700;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -67,6 +85,28 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 24px;
+}
+
+.header-left {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.market-selector-container {
+  display: flex;
+  align-items: center;
+}
+
+.home-sider {
+  display: none;
 }
 
 .market-title {
@@ -85,6 +125,7 @@
   overflow-y: auto;
   padding: 32px;
   background: transparent;
+  min-height: 0;
 }
 
 .chart-container {
@@ -181,11 +222,11 @@
 /* 响应式设计 */
 @media (max-width: 1024px) {
   .home-sider {
-    width: 240px !important;
+    width: 100% !important;
   }
 
   .sider-content {
-    padding: 24px 20px;
+    padding: 20px 24px;
   }
 
   .sider-title {
@@ -211,31 +252,29 @@
 }
 
 @media (max-width: 768px) {
-  /* 移动端布局调整 - 侧边栏改为顶部导航 */
+  /* 移动端布局调整 */
   .home-layout {
     flex-direction: column;
   }
 
-  .home-sider {
+  .header-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .header-left,
+  .header-right {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .market-selector-container {
+    width: 100%;
+  }
+
+  .market-selector-container .ant-select {
     width: 100% !important;
-    height: auto;
-    border-right: none;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  }
-
-  .dark .home-sider {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  }
-
-  .sider-content {
-    padding: 16px 20px;
-  }
-
-  .sider-title {
-    font-size: 16px;
-    margin-bottom: 12px;
   }
 
   .market-title {
@@ -247,8 +286,9 @@
   }
 
   .home-header {
-    height: 64px;
-    padding: 0 20px;
+    height: auto;
+    padding: 16px 20px;
+    min-height: 64px;
   }
 
   .chart-container {
@@ -280,18 +320,23 @@
   .home-header .ant-btn .anticon {
     margin: 0;
   }
+
+  /* 手机端底部卡片垂直排列，每个卡片独占一行 */
+  .overview-card .ant-row {
+    flex-direction: column;
+  }
+
+  .overview-card .ant-col {
+    width: 100% !important;
+    margin-bottom: 8px;
+  }
+
+  .overview-card .ant-col:last-child {
+    margin-bottom: 0;
+  }
 }
 
 @media (max-width: 640px) {
-  .sider-content {
-    padding: 12px 16px;
-  }
-
-  .sider-title {
-    font-size: 14px;
-    margin-bottom: 10px;
-  }
-
   .market-title {
     font-size: 16px;
   }
@@ -301,8 +346,9 @@
   }
 
   .home-header {
-    height: 60px;
-    padding: 0 16px;
+    height: auto;
+    padding: 12px 16px;
+    min-height: 60px;
   }
 
   .home-footer {
@@ -342,15 +388,6 @@
 }
 
 @media (max-width: 480px) {
-  .sider-content {
-    padding: 10px 12px;
-  }
-
-  .sider-title {
-    font-size: 13px;
-    margin-bottom: 8px;
-  }
-
   .market-title {
     font-size: 14px;
   }
@@ -360,8 +397,9 @@
   }
 
   .home-header {
-    height: 56px;
-    padding: 0 12px;
+    height: auto;
+    padding: 10px 12px;
+    min-height: 56px;
   }
 
   .home-footer {
@@ -384,18 +422,47 @@
   .overview-card .ant-statistic-content {
     font-size: 14px;
   }
+
+  /* 移动端按钮优化 */
+  .home-header .ant-btn {
+    padding: 4px 6px;
+    min-width: auto;
+  }
+
+  .home-header .ant-btn .anticon {
+    font-size: 16px;
+  }
+
+  /* 市场选择器优化 */
+  .market-selector-container {
+    gap: 8px;
+  }
+
+  /* 垂直排列优化 */
+  .header-content {
+    gap: 8px;
+  }
+
+  .header-right {
+    gap: 8px;
+  }
+
+  /* 手机端底部卡片垂直排列，每个卡片独占一行 */
+  .overview-card .ant-row {
+    flex-direction: column;
+  }
+
+  .overview-card .ant-col {
+    width: 100% !important;
+    margin-bottom: 8px;
+  }
+
+  .overview-card .ant-col:last-child {
+    margin-bottom: 0;
+  }
 }
 
 @media (max-width: 375px) {
-  .sider-content {
-    padding: 8px 10px;
-  }
-
-  .sider-title {
-    font-size: 12px;
-    margin-bottom: 6px;
-  }
-
   .market-title {
     font-size: 13px;
   }
@@ -405,8 +472,9 @@
   }
 
   .home-header {
-    height: 52px;
-    padding: 0 10px;
+    height: auto;
+    padding: 8px 10px;
+    min-height: 52px;
   }
 
   .home-footer {
@@ -425,31 +493,47 @@
   .overview-card .ant-statistic-content {
     font-size: 12px;
   }
+
+  /* 市场选择器优化 */
+  .market-selector-container .ant-select {
+    width: 100% !important;
+  }
+
+  /* 按钮间距优化 */
+  .header-right .ant-space {
+    gap: 4px !important;
+  }
+
+  /* 手机端底部卡片垂直排列，每个卡片独占一行 */
+  .overview-card .ant-row {
+    flex-direction: column;
+  }
+
+  .overview-card .ant-col {
+    width: 100% !important;
+    margin-bottom: 8px;
+  }
+
+  .overview-card .ant-col:last-child {
+    margin-bottom: 0;
+  }
 }
 
 /* 横屏模式适配 */
 @media (max-height: 500px) and (orientation: landscape) {
-  .home-sider {
-    width: 200px !important;
-  }
-
-  .sider-content {
-    padding: 12px 16px;
-  }
-
-  .sider-title {
-    font-size: 14px;
-    margin-bottom: 8px;
-  }
-
   .home-header {
     height: 56px;
-    padding: 0 16px;
+    padding: 8px 16px;
+    min-height: 56px;
   }
 
   .home-footer {
     padding: 12px 16px;
     min-height: 70px;
+  }
+
+  .home-content {
+    padding: 16px;
   }
 
   .chart-container {
@@ -466,6 +550,25 @@
 
   .overview-card .ant-statistic-content {
     font-size: 16px;
+  }
+
+  /* 横屏模式下Header优化 */
+  .header-content {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .header-left, .header-right {
+    flex: auto;
+  }
+
+  .market-selector-container {
+    width: auto;
+  }
+
+  .market-selector-container .ant-select {
+    width: 150px !important;
   }
 }
 
