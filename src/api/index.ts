@@ -1,7 +1,7 @@
 import axios, { type AxiosResponse, type InternalAxiosRequestConfig, type AxiosError } from 'axios';
 
-// 从环境变量获取API基础URL
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://push2his.eastmoney.com/api/qt';
+// 从环境变量获取API基础URL，生产环境使用相对路径通过代理访问
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api/qt';
 
 // 创建axios实例
 const request = axios.create({
@@ -23,11 +23,12 @@ request.interceptors.request.use(
       config.params = { _t: Date.now() };
     }
 
-    // 可以在这里添加 token 等认证信息
-    // const token = localStorage.getItem('token');
-    // if (token && config.headers) {
-    //   config.headers.Authorization = `Bearer ${token}`;
-    // }
+    // 设置请求头，模拟浏览器请求
+    if (config.headers) {
+      config.headers['Referer'] = 'https://push2his.eastmoney.com/';
+      config.headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36';
+      config.headers['Origin'] = 'https://push2his.eastmoney.com';
+    }
 
     console.log('Request:', {
       url: config.url,
