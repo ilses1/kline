@@ -1,7 +1,7 @@
-import React, { useState, useMemo } from 'react';
-import { Stock } from '@ant-design/charts';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { Card, Spin, Empty, Radio, Select, Space, Button } from 'antd';
 import { ReloadOutlined } from '@ant-design/icons';
+import { init, dispose, type KLineData as KLineChartLibData } from 'klinecharts';
 import type { KLineChartProps, PeriodType, IndicatorType } from './types';
 import './KLineChart.css';
 
@@ -15,12 +15,13 @@ const KLineChart: React.FC<KLineChartProps> = ({
   onIndicatorChange,
 }) => {
   const [indicator, setIndicator] = useState<IndicatorType>('MA');
-  const [showVolume] = useState(true);
+  const chartRef = useRef<HTMLDivElement>(null);
+  const chartInstanceRef = useRef<any>(null);
 
-  // 转换数据格式为 ant-design/charts 需要的格式
+  // 转换数据格式为 klinecharts 需要的格式
   const chartData = useMemo(() => {
-    const result = data.map((item) => ({
-      date: item.date,
+    const result: KLineChartLibData[] = data.map((item) => ({
+      timestamp: new Date(item.date).getTime(),
       open: item.open,
       close: item.close,
       low: item.low,
@@ -59,65 +60,58 @@ const KLineChart: React.FC<KLineChartProps> = ({
     if (onIndicatorChange) {
       onIndicatorChange(newIndicator);
     }
+    
+    // 更新图表指标 - 这里需要重新创建图表，因为klinecharts API不支持动态切换指标
+    if (chartRef.current) {
+      dispose(chartRef.current as HTMLElement);
+      
+      // v9版本：不设置height，通过CSS控制
+      const newChart = init(chartRef.current);
+      
+      if (newChart) {
+        chartInstanceRef.current = newChart;
+        
+        // 设置数据
+        newChart.applyNewData(chartData);
+        
+        // 添加指标
+        if (newIndicator !== 'none') {
+          newChart.createIndicator(newIndicator);
+        }
+      }
+    }
   };
 
-  // K线图配置
-  const stockConfig = {
-    data: chartData,
-    xField: 'date',
-    yField: ['open', 'close', 'low', 'high'],
-    meta: {
-      date: {
-        type: 'cat',
-      },
-    },
-    tooltip: {
-      crosshairs: {
-        type: 'xy',
-      },
-      formatter: (datum: any) => {
-        return {
-          name: datum.date,
-          value: `开: ${datum.open} 收: ${datum.close} 低: ${datum.low} 高: ${datum.high}`,
-        };
-      },
-    },
-    slider: {
-      start: 0.5,
-      end: 1,
-    },
-    interactions: [
-      {
-        type: 'tooltip',
-      },
-      {
-        type: 'crosshair',
-      },
-      {
-        type: 'brush-x',
-      },
-    ],
-  };
+  // 初始化和更新图表
+  useEffect(() => {
+    if (!chartRef.current) return;
 
-  // 成交量图配置
-  const volumeConfig = {
-    data: chartData,
-    xField: 'date',
-    yField: 'volume',
-    meta: {
-      date: {
-        type: 'cat',
-      },
-    },
-    tooltip: {
-      formatter: (datum: any) => {
-        return {
-          name: datum.date,
-          value: `成交量: ${datum.volume}`,
-        };
-      },
-    },
-  };
+    // 如果图表实例已存在，销毁并重新创建
+    if (chartInstanceRef.current) {
+      dispose(chartRef.current as HTMLElement);
+    }
+
+    // 创建图表实例 - v9版本：不设置height，通过CSS控制
+    const chart = init(chartRef.current);
+
+    if (!chart) return;
+
+    chartInstanceRef.current = chart;
+
+    // 设置数据
+    chart.applyNewData(chartData);
+
+    // 添加初始指标
+    if (indicator !== 'none') {
+      chart.createIndicator(indicator);
+    }
+
+    // 清理函数
+    return () => {
+      dispose(chartRef.current as HTMLElement);
+      chartInstanceRef.current = null;
+    };
+  }, [chartData, indicator]);
 
   return (
     <Card
@@ -152,16 +146,7 @@ const KLineChart: React.FC<KLineChartProps> = ({
         {data.length === 0 ? (
           <Empty description="暂无数据" style={{ padding: '50px 0' }} />
         ) : (
-          <>
-            <div style={{ height: `${height}px` }}>
-              <Stock {...stockConfig} />
-            </div>
-            {showVolume && (
-              <div style={{ height: '150px', marginTop: '20px' }}>
-                <Stock {...volumeConfig} />
-              </div>
-            )}
-          </>
+          <div ref={chartRef} style={{ width: '100%', height: `${height + 150}px` }} />
         )}
       </Spin>
     </Card>

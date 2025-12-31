@@ -203,6 +203,11 @@ export const getKLineData = async (
     const secid = symbolToSecid(symbol);
     const periodCode = periodToApiCode(period);
 
+    // 格式化日期为YYYYMMDD格式
+    const formatDate = (dateStr: string): string => {
+      return dateStr.replace(/-/g, '');
+    };
+
     // 如果没有指定开始日期，使用默认值
     const defaultStartDate = startDate || getDefaultStartDate(period);
     // 如果没有指定结束日期，使用今天
@@ -215,8 +220,8 @@ export const getKLineData = async (
         fields2: 'f51,f52,f53,f54,f55,f56,f57,f58,f59,f60,f61',
         klt: periodCode,
         fqt: 1, // 前复权
-        beg: defaultStartDate,
-        end: defaultEndDate,
+        beg: formatDate(defaultStartDate),
+        end: formatDate(defaultEndDate),
         lmt: count,
       },
     });
@@ -341,13 +346,14 @@ export const getRealTimeQuote = async (
       const response = await request.get('/stock/get', {
         params: {
           secid,
-          fields: 'f43,f44,f45,f46,f47,f48,f49,f50,f51,f52,f57,f58,f60,f107,f116,f117,f161,f162,f163,f164,f165',
+          fields: 'f43,f44,f45,f46,f47,f48,f49,f50,f51,f52,f57,f58,f60,f107,f116,f117,f161,f162,f163,f164,f165,f169,f170',
           fltt: 2,
         },
       });
 
-      if (response && response.data && response.data.diff && response.data.diff.length > 0) {
-        const data = response.data.diff[0];
+      // 响应拦截器已经返回了response.data.data，所以直接使用response
+      if (response && response.diff && response.diff.length > 0) {
+        const data = response.diff[0];
         results.push({
           symbol,
           name: data.f58 || '',
@@ -356,13 +362,13 @@ export const getRealTimeQuote = async (
           changePercent: data.f170 || 0,
           volume: data.f47 || 0,
           amount: data.f48 || 0,
-          bidPrice: data.f46 || 0,
+          bidPrice: data.f44 || 0,
           askPrice: data.f45 || 0,
-          bidVolume: data.f50 || 0,
-          askVolume: data.f51 || 0,
-          high: data.f44 || 0,
-          low: data.f45 || 0,
-          open: data.f46 || 0,
+          bidVolume: data.f49 || 0,
+          askVolume: data.f50 || 0,
+          high: data.f51 || 0,
+          low: data.f52 || 0,
+          open: data.f57 || 0,
           preClose: data.f60 || 0,
           updateTime: new Date().toISOString(),
         });
@@ -494,10 +500,11 @@ export const searchStock = async (keyword: string): Promise<MarketInfo[]> => {
       },
     });
 
-    if (response && response.data) {
-      return response.data.map((item: any) => ({
-        symbol: item.code,
-        name: item.name,
+    // 响应拦截器已经返回了response.data.data，所以直接使用response
+    if (response && response.suggestions && Array.isArray(response.suggestions)) {
+      return response.suggestions.map((item: any) => ({
+        symbol: item.code || '',
+        name: item.name || '',
         price: 0,
         change: 0,
         changePercent: 0,

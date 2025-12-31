@@ -1,7 +1,7 @@
 import axios, { type AxiosResponse, type InternalAxiosRequestConfig } from 'axios';
 
 // 从环境变量获取API基础URL
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://push2.eastmoney.com/api/qt';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://push2his.eastmoney.com/api/qt';
 
 // 创建axios实例
 const request = axios.create({
