@@ -299,8 +299,9 @@ export const getQuarterRange = (
   format = 'YYYY-MM-DD'
 ): [string, string] => {
   const d = dayjs(date);
-  const start = d.startOf('quarter' as any);
-  const end = d.endOf('quarter' as any);
+  // dayjs支持quarter参数，但类型定义可能没有更新，使用更精确的类型断言
+  const start = d.startOf('quarter' as dayjs.ManipulateType);
+  const end = d.endOf('quarter' as dayjs.ManipulateType);
   return [start.format(format), end.format(format)];
 };
 

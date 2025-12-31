@@ -16,7 +16,13 @@ const KLineChart: React.FC<KLineChartProps> = ({
 }) => {
   const [indicator, setIndicator] = useState<IndicatorType>('MA');
   const chartRef = useRef<HTMLDivElement>(null);
-  const chartInstanceRef = useRef<any>(null);
+  // 定义chart实例的接口，包含resize方法
+  interface ChartInstance {
+    resize: () => void;
+    applyNewData: (data: KLineChartLibData[]) => void;
+    createIndicator: (type: IndicatorType) => void;
+  }
+  const chartInstanceRef = useRef<ChartInstance | null>(null);
 
   // 转换数据格式为 klinecharts 需要的格式
   const chartData = useMemo(() => {
@@ -62,21 +68,24 @@ const KLineChart: React.FC<KLineChartProps> = ({
     }
     
     // 更新图表指标 - 这里需要重新创建图表，因为klinecharts API不支持动态切换指标
-    if (chartRef.current) {
-      dispose(chartRef.current as HTMLElement);
+    const currentChartRef = chartRef.current;
+    if (currentChartRef) {
+      dispose(currentChartRef as HTMLElement);
       
       // v9版本：不设置height，通过CSS控制
-      const newChart = init(chartRef.current);
+      const newChart = init(currentChartRef);
       
       if (newChart) {
-        chartInstanceRef.current = newChart;
+        // 类型断言，确保newChart具有所需的方法
+        const typedChart = newChart as ChartInstance;
+        chartInstanceRef.current = typedChart;
         
         // 设置数据
-        newChart.applyNewData(chartData);
+        typedChart.applyNewData(chartData);
         
         // 添加指标
         if (newIndicator !== 'none') {
-          newChart.createIndicator(newIndicator);
+          typedChart.createIndicator(newIndicator);
         }
       }
     }
@@ -84,26 +93,29 @@ const KLineChart: React.FC<KLineChartProps> = ({
 
   // 初始化和更新图表
   useEffect(() => {
-    if (!chartRef.current) return;
+    const currentChartRef = chartRef.current;
+    if (!currentChartRef) return;
 
     // 如果图表实例已存在，销毁并重新创建
     if (chartInstanceRef.current) {
-      dispose(chartRef.current as HTMLElement);
+      dispose(currentChartRef as HTMLElement);
     }
 
     // 创建图表实例 - v9版本：使用默认配置，通过CSS控制高度
-    const chart = init(chartRef.current);
+    const chart = init(currentChartRef);
 
     if (!chart) return;
 
-    chartInstanceRef.current = chart;
+    // 类型断言，确保chart具有所需的方法
+    const typedChart = chart as ChartInstance;
+    chartInstanceRef.current = typedChart;
 
     // 设置数据
-    chart.applyNewData(chartData);
+    typedChart.applyNewData(chartData);
 
     // 添加初始指标
     if (indicator !== 'none') {
-      chart.createIndicator(indicator);
+      typedChart.createIndicator(indicator);
     }
 
     // 添加ResizeObserver监听容器大小变化
@@ -114,12 +126,12 @@ const KLineChart: React.FC<KLineChartProps> = ({
     });
 
     // 监听图表容器
-    resizeObserver.observe(chartRef.current);
+    resizeObserver.observe(currentChartRef);
 
     // 清理函数
     return () => {
       resizeObserver.disconnect();
-      dispose(chartRef.current as HTMLElement);
+      dispose(currentChartRef as HTMLElement);
       chartInstanceRef.current = null;
     };
   }, [chartData, indicator]);

@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useRef } from 'react';
 import { Select } from 'antd';
 import type { SelectProps } from 'antd';
 import './MarketSelector.css';
@@ -53,19 +53,18 @@ function useDebounce<T extends (...args: any[]) => any>(
   callback: T,
   delay: number
 ): (...args: Parameters<T>) => void {
-  const [timer, setTimer] = useState<number | null>(null);
+  const timerRef = useRef<number | null>(null);
 
   const debouncedCallback = useCallback(
     (...args: Parameters<T>) => {
-      if (timer) {
-        clearTimeout(timer);
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
       }
-      const newTimer = setTimeout(() => {
+      timerRef.current = setTimeout(() => {
         callback(...args);
       }, delay);
-      setTimer(newTimer);
     },
-    [callback, delay, timer]
+    [callback, delay]
   );
 
   return debouncedCallback;

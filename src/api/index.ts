@@ -1,4 +1,4 @@
-import axios, { type AxiosResponse, type InternalAxiosRequestConfig } from 'axios';
+import axios, { type AxiosResponse, type InternalAxiosRequestConfig, type AxiosError } from 'axios';
 
 // 从环境变量获取API基础URL
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://push2his.eastmoney.com/api/qt';
@@ -38,7 +38,7 @@ request.interceptors.request.use(
 
     return config;
   },
-  (error: any) => {
+  (error: AxiosError) => {
     console.error('Request Error:', error);
     return Promise.reject(error);
   }
@@ -62,7 +62,7 @@ request.interceptors.response.use(
 
     return response.data;
   },
-  (error: any) => {
+  (error: AxiosError) => {
     console.error('Response Error:', error);
 
     // 错误处理逻辑
@@ -102,7 +102,7 @@ request.interceptors.response.use(
 
       // 返回统一的错误信息
       return Promise.reject({
-        message: data?.message || `请求失败: ${status}`,
+        message: typeof data === 'object' && data && 'message' in data ? data.message as string : `请求失败: ${status}`,
         code: status,
         data,
       });
@@ -125,4 +125,4 @@ request.interceptors.response.use(
 );
 
 export default request;
-
+

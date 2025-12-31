@@ -129,6 +129,7 @@ const Home: React.FC = () => {
   // 初始化加载数据
   useEffect(() => {
     fetchKlineData(selectedMarket, period);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

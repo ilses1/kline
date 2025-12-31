@@ -72,7 +72,7 @@ export type PeriodType = 'day' | 'week' | 'month' | 'minute' | 'hour';
 /**
  * 通用API响应结构
  */
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   code: number;
   message: string;
   data: T;
@@ -82,7 +82,7 @@ export interface ApiResponse<T = any> {
 /**
  * 分页响应结构
  */
-export interface PaginatedResponse<T = any> {
+export interface PaginatedResponse<T = unknown> {
   list: T[];
   total: number;
   page: number;

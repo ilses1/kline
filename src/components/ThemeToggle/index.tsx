@@ -6,21 +6,21 @@ import { MoonOutlined, SunOutlined } from '@ant-design/icons';
  * 支持亮色/暗色主题切换
  */
 const ThemeToggle: React.FC = () => {
-  const [isDark, setIsDark] = useState(false);
+  // 初始化时直接计算主题状态，避免在 effect 中调用 setState
+  const savedTheme = localStorage.getItem('theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const initialIsDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
+  
+  const [isDark, setIsDark] = useState(initialIsDark);
 
+  // 初始化主题类名
   useEffect(() => {
-    // 从 localStorage 读取主题设置
-    const savedTheme = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
-    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
-      setIsDark(true);
+    if (initialIsDark) {
       document.documentElement.classList.add('dark');
     } else {
-      setIsDark(false);
       document.documentElement.classList.remove('dark');
     }
-  }, []);
+  }, [initialIsDark]);
 
   const toggleTheme = () => {
     const newTheme = !isDark;

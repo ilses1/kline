@@ -343,8 +343,10 @@ export const getRealTimeQuote = async (
       });
 
       // 响应拦截器已经返回了response.data.data，所以直接使用response
-      if (response && response.diff && response.diff.length > 0) {
-        const data = response.diff[0];
+      // 添加类型断言，告诉TypeScript response具有diff属性
+      const typedResponse = response as { diff?: RealtimeQuoteResponseItem[] };
+      if (typedResponse && typedResponse.diff && typedResponse.diff.length > 0) {
+        const data = typedResponse.diff[0];
         results.push({
           symbol,
           name: data.f58 || '',
@@ -359,7 +361,8 @@ export const getRealTimeQuote = async (
           askVolume: data.f50 || 0,
           high: data.f51 || 0,
           low: data.f52 || 0,
-          open: data.f57 || 0,
+          // f57是代码，f46是开盘价，修复类型错误
+          open: data.f46 || 0,
           preClose: data.f60 || 0,
           updateTime: new Date().toISOString(),
         });
@@ -478,12 +481,61 @@ export const getMarketOverview = async (symbol: string): Promise<MarketOverview>
 };
 
 /**
+ * 实时行情数据响应项类型
+ */
+interface RealtimeQuoteResponseItem {
+  f43: number; // 最新价
+  f44: number; // 买一价
+  f45: number; // 卖一价
+  f46: number; // 开盘价
+  f47: number; // 成交量
+  f48: number; // 成交额
+  f49: number; // 买一量
+  f50: number; // 卖一量
+  f51: number; // 最高价
+  f52: number; // 最低价
+  f57: string; // 代码
+  f58: string; // 名称
+  f60: number; // 昨收价
+  f107: number; // 市盈率
+  f116: number; // 市净率
+  f117: number; // 总市值
+  f161: number; // 涨幅
+  f162: number; // 涨跌额
+  f163: number; // 换手率
+  f164: number; // 振幅
+  f165: number; // 量比
+  f169: number; // 涨跌额（另一个字段）
+  f170: number; // 涨跌幅（另一个字段）
+}
+
+// 删除未使用的接口
+// interface RealtimeQuoteResponse {
+//   diff: RealtimeQuoteResponseItem[];
+// }
+
+/**
+ * 股票搜索建议项类型
+ */
+interface StockSuggestionItem {
+  code: string;
+  name: string;
+}
+
+/**
+ * 股票搜索响应类型
+ */
+interface StockSearchResponse {
+  suggestions: StockSuggestionItem[];
+}
+
+/**
  * 搜索股票
  * @param keyword 搜索关键词
  */
 export const searchStock = async (keyword: string): Promise<MarketInfo[]> => {
   try {
-    const response = await request.get('/stock/suggest/get', {
+    const response = await request.get<StockSearchResponse>('/stock/suggest/get', {
       params: {
         input: keyword,
         type: '14',
@@ -492,8 +544,8 @@ export const searchStock = async (keyword: string): Promise<MarketInfo[]> => {
     });
 
     // 响应拦截器已经返回了response.data.data，所以直接使用response
-    if (response && response.suggestions && Array.isArray(response.suggestions)) {
-      return response.suggestions.map((item: any) => ({
+    if (response && (response as any).suggestions && Array.isArray((response as any).suggestions)) {
+      return (response as any).suggestions.map((item: StockSuggestionItem) => ({
         symbol: item.code || '',
         name: item.name || '',
         price: 0,
