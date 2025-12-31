@@ -4,7 +4,6 @@ import type {
   MarketInfo,
   MarketDetail,
   IndicatorData,
-  ApiResponse,
   PeriodType,
   IndicatorType,
   RealtimeQuote,
@@ -45,7 +44,7 @@ const symbolToSecid = (symbol: string): string => {
  * 生成模拟K线数据
  */
 const generateMockKLineData = (
-  symbol: string,
+  _symbol: string,
   period: PeriodType,
   count: number = 100
 ): KLineData[] => {
@@ -103,8 +102,8 @@ const generateMockKLineData = (
  * 生成模拟技术指标数据
  */
 const generateMockIndicatorData = (
-  symbol: string,
-  period: PeriodType,
+  _symbol: string,
+  _period: PeriodType,
   indicatorType: IndicatorType,
   count: number = 100
 ): IndicatorData[] => {
@@ -223,14 +222,35 @@ export const getKLineData = async (
     });
 
     console.log('API Response:', response);
-    console.log('Response.klines:', response?.klines);
+    console.log('Response:', response);
 
     // 解析东方财富API返回的数据格式
     // klines格式: 日期,开盘,收盘,最高,最低,成交量,成交额,振幅,涨跌幅,涨跌额,换手率
-    if (response && response.klines && response.klines.length > 0) {
-      console.log('解析K线数据，数量:', response.klines.length);
-      const parsedData = response.klines.map((item: string) => {
-        const [date, open, close, high, low, volume, amount, amplitude, changePercent, changeAmount, turnoverRate] = item.split(',');
+    // 响应拦截器返回的是response.data.data，可能是一个包含klines属性的对象
+    if (response && typeof response === 'object' && 'klines' in response) {
+      const responseWithKlines = response as { klines: string[] };
+      if (responseWithKlines.klines && responseWithKlines.klines.length > 0) {
+        console.log('解析K线数据，数量:', responseWithKlines.klines.length);
+        const parsedData = responseWithKlines.klines.map((item: string) => {
+          const [date, open, close, high, low, volume] = item.split(',');
+          return {
+            date,
+            open: parseFloat(open),
+            close: parseFloat(close),
+            high: parseFloat(high),
+            low: parseFloat(low),
+            volume: parseFloat(volume),
+          };
+        });
+        console.log('解析后的数据:', parsedData.slice(0, 3));
+        return parsedData;
+      }
+    }
+    // 也可能直接返回klines数组
+    if (Array.isArray(response) && response.length > 0) {
+      console.log('解析K线数据，数量:', response.length);
+      const parsedData = response.map((item: string) => {
+        const [date, open, close, high, low, volume] = item.split(',');
         return {
           date,
           open: parseFloat(open),

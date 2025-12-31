@@ -53,7 +53,7 @@ function useDebounce<T extends (...args: any[]) => any>(
   callback: T,
   delay: number
 ): (...args: Parameters<T>) => void {
-  const [timer, setTimer] = useState<NodeJS.Timeout | null>(null);
+  const [timer, setTimer] = useState<number | null>(null);
 
   const debouncedCallback = useCallback(
     (...args: Parameters<T>) => {
@@ -71,7 +71,7 @@ function useDebounce<T extends (...args: any[]) => any>(
   return debouncedCallback;
 }
 
-interface MarketSelectorProps extends Omit<SelectProps<string>, 'options'> {
+interface MarketSelectorProps extends Omit<SelectProps<string>, 'options' | 'onChange'> {
   value?: string;
   onChange?: (value: string, option: MarketOption | undefined) => void;
   placeholder?: string;

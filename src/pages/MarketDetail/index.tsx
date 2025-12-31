@@ -4,17 +4,8 @@ import { Card, Row, Col, Button, Space, Spin, message } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import KLineChart from '@/components/KLineChart';
 import { getKLineData } from '@/api/marketApi';
-import type { KLineData, PeriodType, IndicatorType } from '@/types/market';
+import type { KLineData, PeriodType } from '@/types/market';
 import './index.css';
-
-const PRESET_MARKETS = [
-  { label: '沪深300', value: '000300.SH' },
-  { label: '上证指数', value: '000001.SH' },
-  { label: '深证成指', value: '399001.SZ' },
-  { label: '创业板指', value: '399006.SZ' },
-  { label: '中证500', value: '000905.SH' },
-  { label: '中证1000', value: '000852.SH' },
-];
 
 const MarketDetail: React.FC = () => {
   const { symbol } = useParams<{ symbol: string }>();

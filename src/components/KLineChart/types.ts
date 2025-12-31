@@ -1,5 +1,7 @@
 import type { KLineData, PeriodType, IndicatorType } from '@/types/market';
 
+export type { PeriodType, IndicatorType };
+
 export interface KLineChartProps {
   data: KLineData[];
   symbol: string;

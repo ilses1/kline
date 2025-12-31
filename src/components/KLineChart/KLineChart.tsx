@@ -13,145 +13,144 @@ const KLineChart: React.FC<KLineChartProps> = ({
   height = 600,
   onPeriodChange,
   onIndicatorChange,
-  onDateChange,
 }) => {
   const [indicator, setIndicator] = useState<IndicatorType>('MA');
-  const [showVolume, setShowVolume] = useState(true);
+  const [showVolume] = useState(true);
 
-  // 计算MA均线数据
-  const calculateMA = (data: any[], dayCount: number) => {
-    const result: any[] = [];
-    for (let i = 0; i < data.length; i++) {
-      if (i < dayCount - 1) {
-        result.push({
-          date: data[i].date,
-          value: null,
-        });
-        continue;
-      }
-      let sum = 0;
-      for (let j = 0; j < dayCount; j++) {
-        sum += data[i - j].close; // close price
-      }
-      result.push({
-        date: data[i].date,
-        value: sum / dayCount,
-      });
-    }
-    return result;
-  };
+  // 计算MA均线数据 - 暂时注释，因为未使用
+  // const calculateMA = (data: any[], dayCount: number) => {
+  //   const result: any[] = [];
+  //   for (let i = 0; i < data.length; i++) {
+  //     if (i < dayCount - 1) {
+  //       result.push({
+  //         date: data[i].date,
+  //         value: null,
+  //       });
+  //       continue;
+  //     }
+  //     let sum = 0;
+  //     for (let j = 0; j < dayCount; j++) {
+  //       sum += data[i - j].close; // close price
+  //     }
+  //     result.push({
+  //       date: data[i].date,
+  //       value: sum / dayCount,
+  //     });
+  //   }
+  //   return result;
+  // };
 
-  // 计算MACD指标
-  const calculateMACD = (data: any[]) => {
-    const shortPeriod = 12;
-    const longPeriod = 26;
-    const signalPeriod = 9;
-    
-    const calculateEMA = (data: number[], period: number) => {
-      const k = 2 / (period + 1);
-      const ema = [data[0]];
-      for (let i = 1; i < data.length; i++) {
-        ema.push(data[i] * k + ema[i - 1] * (1 - k));
-      }
-      return ema;
-    };
+  // 计算MACD指标 - 暂时注释，因为未使用
+  // const calculateMACD = (data: any[]) => {
+  //   const shortPeriod = 12;
+  //   const longPeriod = 26;
+  //   const signalPeriod = 9;
+  //   
+  //   const calculateEMA = (data: number[], period: number) => {
+  //     const k = 2 / (period + 1);
+  //     const ema = [data[0]];
+  //     for (let i = 1; i < data.length; i++) {
+  //       ema.push(data[i] * k + ema[i - 1] * (1 - k));
+  //     }
+  //     return ema;
+  //   };
 
-    const closePrices = data.map(d => d.close);
-    const emaShort = calculateEMA(closePrices, shortPeriod);
-    const emaLong = calculateEMA(closePrices, longPeriod);
-    
-    const dif = emaShort.map((v, i) => v - emaLong[i]);
-    const dea = calculateEMA(dif, signalPeriod);
-    const macd = dif.map((v, i) => (v - dea[i]) * 2);
+  //   const closePrices = data.map(d => d.close);
+  //   const emaShort = calculateEMA(closePrices, shortPeriod);
+  //   const emaLong = calculateEMA(closePrices, longPeriod);
+  //   
+  //   const dif = emaShort.map((v, i) => v - emaLong[i]);
+  //   const dea = calculateEMA(dif, signalPeriod);
+  //   const macd = dif.map((v, i) => (v - dea[i]) * 2);
 
-    return data.map((d, i) => ({
-      date: d.date,
-      dif: dif[i],
-      dea: dea[i],
-      macd: macd[i],
-    }));
-  };
+  //   return data.map((d, i) => ({
+  //     date: d.date,
+  //     dif: dif[i],
+  //     dea: dea[i],
+  //     macd: macd[i],
+  //   }));
+  // };
 
-  // 计算KDJ指标
-  const calculateKDJ = (data: any[]) => {
-    const n = 9;
-    const result: any[] = [];
+  // 计算KDJ指标 - 暂时注释，因为未使用
+  // const calculateKDJ = (data: any[]) => {
+  //   const n = 9;
+  //   const result: any[] = [];
 
-    for (let i = 0; i < data.length; i++) {
-      if (i < n - 1) {
-        result.push({
-          date: data[i].date,
-          k: 50,
-          d: 50,
-          j: 50,
-        });
-        continue;
-      }
+  //   for (let i = 0; i < data.length; i++) {
+  //     if (i < n - 1) {
+  //       result.push({
+  //         date: data[i].date,
+  //         k: 50,
+  //         d: 50,
+  //         j: 50,
+  //       });
+  //       continue;
+  //     }
 
-      let high = -Infinity;
-      let low = Infinity;
-      for (let j = 0; j < n; j++) {
-        high = Math.max(high, data[i - j].high); // high
-        low = Math.min(low, data[i - j].low); // low
-      }
+  //     let high = -Infinity;
+  //     let low = Infinity;
+  //     for (let j = 0; j < n; j++) {
+  //       high = Math.max(high, data[i - j].high); // high
+  //       low = Math.min(low, data[i - j].low); // low
+  //     }
 
-      const rsv = ((data[i].close - low) / (high - low)) * 100;
-      const prevK = result[i - 1].k;
-      const prevD = result[i - 1].d;
-      
-      const k = (2 / 3) * prevK + (1 / 3) * rsv;
-      const d = (2 / 3) * prevD + (1 / 3) * k;
-      const j = 3 * k - 2 * d;
+  //     const rsv = ((data[i].close - low) / (high - low)) * 100;
+  //     const prevK = result[i - 1].k;
+  //     const prevD = result[i - 1].d;
+  //     
+  //     const k = (2 / 3) * prevK + (1 / 3) * rsv;
+  //     const d = (2 / 3) * prevD + (1 / 3) * k;
+  //     const j = 3 * k - 2 * d;
 
-      result.push({
-        date: data[i].date,
-        k,
-        d,
-        j,
-      });
-    }
+  //     result.push({
+  //       date: data[i].date,
+  //       k,
+  //       d,
+  //       j,
+  //     });
+  //   }
 
-    return result;
-  };
+  //   return result;
+  // };
 
-  // 计算RSI指标
-  const calculateRSI = (data: any[]) => {
-    const period = 14;
-    const result: any[] = [];
+  // 计算RSI指标 - 暂时注释，因为未使用
+  // const calculateRSI = (data: any[]) => {
+  //   const period = 14;
+  //   const result: any[] = [];
 
-    for (let i = 0; i < data.length; i++) {
-      if (i < period) {
-        result.push({
-          date: data[i].date,
-          rsi: 50,
-        });
-        continue;
-      }
+  //   for (let i = 0; i < data.length; i++) {
+  //     if (i < period) {
+  //       result.push({
+  //         date: data[i].date,
+  //         rsi: 50,
+  //       });
+  //       continue;
+  //     }
 
-      let gains = 0;
-      let losses = 0;
+  //     let gains = 0;
+  //     let losses = 0;
 
-      for (let j = 0; j < period; j++) {
-        const change = data[i - j].close - data[i - j - 1].close;
-        if (change > 0) {
-          gains += change;
-        } else {
-          losses -= change;
-        }
-      }
+  //     for (let j = 0; j < period; j++) {
+  //       const change = data[i - j].close - data[i - j - 1].close;
+  //       if (change > 0) {
+  //         gains += change;
+  //       } else {
+  //         losses -= change;
+  //       }
+  //     }
 
-      const avgGain = gains / period;
-      const avgLoss = losses / period;
-      const rs = avgLoss === 0 ? 100 : avgGain / avgLoss;
-      const rsi = 100 - (100 / (1 + rs));
+  //     const avgGain = gains / period;
+  //     const avgLoss = losses / period;
+  //     const rs = avgLoss === 0 ? 100 : avgGain / avgLoss;
+  //     const rsi = 100 - (100 / (1 + rs));
 
-      result.push({
-        date: data[i].date,
-        rsi,
-      });
-    }
+  //     result.push({
+  //       date: data[i].date,
+  //       rsi,
+  //     });
+  //   }
 
-    return result;
+  //   return result;
   };
 
   // 转换数据格式为 ant-design/charts 需要的格式
@@ -176,30 +175,30 @@ const KLineChart: React.FC<KLineChartProps> = ({
     return result;
   }, [data]);
 
-  // 计算指标数据
-  const indicatorData = useMemo(() => {
-    if (indicator === 'MA') {
-      return {
-        ma5: calculateMA(chartData, 5),
-        ma10: calculateMA(chartData, 10),
-        ma20: calculateMA(chartData, 20),
-        ma30: calculateMA(chartData, 30),
-      };
-    } else if (indicator === 'MACD') {
-      return {
-        macd: calculateMACD(chartData),
-      };
-    } else if (indicator === 'KDJ') {
-      return {
-        kdj: calculateKDJ(chartData),
-      };
-    } else if (indicator === 'RSI') {
-      return {
-        rsi: calculateRSI(chartData),
-      };
-    }
-    return {};
-  }, [chartData, indicator]);
+  // 计算指标数据 - 暂时注释，因为未使用
+  // const indicatorData = useMemo(() => {
+  //   if (indicator === 'MA') {
+  //     return {
+  //       ma5: calculateMA(chartData, 5),
+  //       ma10: calculateMA(chartData, 10),
+  //       ma20: calculateMA(chartData, 20),
+  //       ma30: calculateMA(chartData, 30),
+  //     };
+  //   } else if (indicator === 'MACD') {
+  //     return {
+  //       macd: calculateMACD(chartData),
+  //     };
+  //   } else if (indicator === 'KDJ') {
+  //     return {
+  //       kdj: calculateKDJ(chartData),
+  //     };
+  //   } else if (indicator === 'RSI') {
+  //     return {
+  //       rsi: calculateRSI(chartData),
+  //     };
+  //   }
+  //   return {};
+  // }, [chartData, indicator]);
 
   // 周期选项
   const periodOptions = [

@@ -5,7 +5,7 @@ import MarketSelector from '../../components/MarketSelector/MarketSelector';
 import KLineChart from '../../components/KLineChart/KLineChart';
 import ThemeToggle from '../../components/ThemeToggle';
 import { getKLineData } from '../../api/marketApi';
-import type { KLineData, PeriodType, IndicatorType } from '../../types/market';
+import type { KLineData, PeriodType } from '../../types/market';
 import './index.css';
 
 const PRESET_MARKETS = [

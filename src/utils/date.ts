@@ -228,7 +228,7 @@ export const generateRecentDays = (
 ): string[] => {
   const end = dayjs(endDate);
   const start = end.subtract(days - 1, 'day');
-  return generateDateRange(start, end, format);
+  return generateDateRange(start.toDate(), end.toDate(), format);
 };
 
 /**
