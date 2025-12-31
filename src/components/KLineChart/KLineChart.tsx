@@ -198,4 +198,4 @@ const KLineChart: React.FC<KLineChartProps> = ({
   );
 };
 
-export default KLineChart;
+export default React.memo(KLineChart);

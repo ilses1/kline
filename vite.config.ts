@@ -31,12 +31,15 @@ export default defineConfig({
     outDir: 'dist',
     sourcemap: false,
     // 优化打包大小
+    chunkSizeWarningLimit: 1000,
     rollupOptions: {
       output: {
         manualChunks: {
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
           'antd-vendor': ['antd'],
+          'icons-vendor': ['@ant-design/icons'],
           'chart-vendor': ['klinecharts'],
+          'utils-vendor': ['axios', 'dayjs'],
         }
       }
     }

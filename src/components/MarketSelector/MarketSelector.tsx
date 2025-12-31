@@ -49,14 +49,14 @@ const PRESET_MARKETS: MarketOption[] = [
 const CATEGORIES = ['主要指数', '行业板块', '概念板块'];
 
 // 防抖函数
-function useDebounce<T extends (...args: any[]) => any>(
-  callback: T,
+function useDebounce<T extends any[]>(
+  callback: (...args: T) => void,
   delay: number
-): (...args: Parameters<T>) => void {
+): (...args: T) => void {
   const timerRef = useRef<number | null>(null);
 
   const debouncedCallback = useCallback(
-    (...args: Parameters<T>) => {
+    (...args: T) => {
       if (timerRef.current) {
         clearTimeout(timerRef.current);
       }
@@ -163,4 +163,4 @@ const MarketSelector: React.FC<MarketSelectorProps> = ({
   );
 };
 
-export default MarketSelector;
+export default React.memo(MarketSelector);

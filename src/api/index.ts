@@ -30,12 +30,14 @@ request.interceptors.request.use(
       config.headers['Origin'] = 'https://push2his.eastmoney.com';
     }
 
-    console.log('Request:', {
-      url: config.url,
-      method: config.method,
-      params: config.params,
-      data: config.data,
-    });
+    if (import.meta.env.DEV) {
+      console.log('Request:', {
+        url: config.url,
+        method: config.method,
+        params: config.params,
+        data: config.data,
+      });
+    }
 
     return config;
   },
@@ -48,16 +50,20 @@ request.interceptors.request.use(
 // 响应拦截器
 request.interceptors.response.use(
   (response: AxiosResponse) => {
-    console.log('Response:', {
-      url: response.config.url,
-      status: response.status,
-      data: response.data,
-    });
+    if (import.meta.env.DEV) {
+      console.log('Response:', {
+        url: response.config.url,
+        status: response.status,
+        data: response.data,
+      });
+    }
 
     // 处理东方财富API的响应格式
     // API返回格式: { rc: 0, rt: 17, svr: 177617938, lt: 1, full: 0, dlmkts: "", data: { ... } }
     if (response.data && response.data.rc === 0 && response.data.data) {
-      console.log('返回data.data:', response.data.data);
+      if (import.meta.env.DEV) {
+        console.log('返回data.data:', response.data.data);
+      }
       return response.data.data;
     }
 

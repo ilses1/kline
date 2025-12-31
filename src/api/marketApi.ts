@@ -10,6 +10,15 @@ import type {
   MarketOverview,
 } from '@/types/market';
 
+// K线数据缓存与请求取消控制
+interface KlineCacheEntry {
+  data: KLineData[];
+  timestamp: number;
+}
+const klineCache = new Map<string, KlineCacheEntry>();
+const klineControllers = new Map<string, AbortController>();
+const KLINE_CACHE_TTL_MS = 2 * 60 * 1000;
+
 /**
  * 转换周期类型到东方财富API的周期代码
  */
@@ -191,6 +200,19 @@ export const getKLineData = async (
   count: number = 1000
 ): Promise<KLineData[]> => {
   try {
+    const cacheKey = `${symbol}|${period}|${startDate || ''}|${endDate || ''}|${count}`;
+    const cached = klineCache.get(cacheKey);
+    if (cached && Date.now() - cached.timestamp < KLINE_CACHE_TTL_MS) {
+      return cached.data;
+    }
+
+    const existingController = klineControllers.get(cacheKey);
+    if (existingController) {
+      existingController.abort();
+    }
+    const controller = new AbortController();
+    klineControllers.set(cacheKey, controller);
+
     const secid = symbolToSecid(symbol);
     const periodCode = periodToApiCode(period);
 
@@ -215,6 +237,7 @@ export const getKLineData = async (
         end: formatDate(defaultEndDate),
         lmt: count,
       },
+      signal: controller.signal,
     });
 
     console.log('API Response:', response);
@@ -239,6 +262,8 @@ export const getKLineData = async (
           };
         });
         console.log('解析后的数据:', parsedData.slice(0, 3));
+        klineCache.set(cacheKey, { data: parsedData, timestamp: Date.now() });
+        klineControllers.delete(cacheKey);
         return parsedData;
       }
     }
@@ -257,15 +282,29 @@ export const getKLineData = async (
         };
       });
       console.log('解析后的数据:', parsedData.slice(0, 3));
+      klineCache.set(cacheKey, { data: parsedData, timestamp: Date.now() });
+      klineControllers.delete(cacheKey);
       return parsedData;
     }
 
     // 如果API返回空数据，使用模拟数据
     console.warn('API返回空数据，使用模拟数据');
-    return generateMockKLineData(symbol, period, count);
+    {
+      const fallback = generateMockKLineData(symbol, period, count);
+      klineCache.set(cacheKey, { data: fallback, timestamp: Date.now() });
+      klineControllers.delete(cacheKey);
+      return fallback;
+    }
   } catch (error) {
+    if (error instanceof DOMException && error.name === 'AbortError') {
+      return Promise.reject(error);
+    }
     console.error('获取K线数据失败，使用模拟数据:', error);
-    return generateMockKLineData(symbol, period, count);
+    const cacheKey = `${symbol}|${period}|${startDate || ''}|${endDate || ''}|${count}`;
+    const fallback = generateMockKLineData(symbol, period, count);
+    klineCache.set(cacheKey, { data: fallback, timestamp: Date.now() });
+    klineControllers.delete(cacheKey);
+    return fallback;
   }
 };
 
@@ -544,8 +583,13 @@ export const searchStock = async (keyword: string): Promise<MarketInfo[]> => {
     });
 
     // 响应拦截器已经返回了response.data.data，所以直接使用response
-    if (response && (response as any).suggestions && Array.isArray((response as any).suggestions)) {
-      return (response as any).suggestions.map((item: StockSuggestionItem) => ({
+    const isStockSearchResponse = (r: unknown): r is StockSearchResponse => {
+      if (!r || typeof r !== 'object') return false;
+      const obj = r as Record<string, unknown>;
+      return Array.isArray(obj['suggestions']);
+    };
+    if (isStockSearchResponse(response)) {
+      return response.suggestions.map((item: StockSuggestionItem) => ({
         symbol: item.code || '',
         name: item.name || '',
         price: 0,
